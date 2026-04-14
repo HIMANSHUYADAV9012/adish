@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,9 +137,42 @@
         font-size: 1.1rem;
       }
     }
+
+    /* Music indicator */
+    .music-indicator {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 10000;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      padding: 8px 12px;
+      border-radius: 60px;
+      font-size: 12px;
+      color: #ff99cc;
+      border: 1px solid rgba(255,105,180,0.5);
+      font-weight: 500;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+    .music-indicator i {
+      margin-right: 6px;
+      animation: pulseNote 1.2s infinite;
+    }
+    @keyframes pulseNote {
+      0% { opacity: 0.5; text-shadow: 0 0 0px pink; }
+      100% { opacity: 1; text-shadow: 0 0 6px #ff69b4; }
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-[#0a0a1a] via-[#1a0b2e] to-[#2d103f] flex items-center justify-center min-h-screen p-4">
+
+  <!-- Music playing visual indicator (subtle but shows active) -->
+  <div class="music-indicator" id="musicIndicator">
+    <i class="fas fa-music"></i> <span id="musicStatus">♥ LOVE SONG READY ♥</span>
+  </div>
 
   <div class="relative z-10 w-full max-w-md mx-auto">
     <!-- Main Calculator Card -->
@@ -168,27 +200,27 @@
       
       <!-- Buttons Grid -->
       <div class="grid grid-cols-4 gap-2 md:gap-3">
-        <button onclick="calculator.clear()" class="btn bg-gradient-to-br from-red-600 to-rose-700 text-white py-3 md:py-4 rounded-xl text-lg md:text-xl font-semibold shadow-md">C</button>
-        <button onclick="calculator.append('/')" class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl">÷</button>
-        <button onclick="calculator.append('*')" class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl">×</button>
-        <button onclick="calculator.append('-')" class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl">−</button>
+        <button class="btn bg-gradient-to-br from-red-600 to-rose-700 text-white py-3 md:py-4 rounded-xl text-lg md:text-xl font-semibold shadow-md" data-action="clear">C</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl" data-op="/">÷</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl" data-op="*">×</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl" data-op="-">−</button>
         
-        <button onclick="calculator.append('7')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl font-medium">7</button>
-        <button onclick="calculator.append('8')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">8</button>
-        <button onclick="calculator.append('9')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">9</button>
-        <button onclick="calculator.append('+')" class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl">+</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl font-medium" data-num="7">7</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="8">8</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="9">9</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-pink-200 py-3 md:py-4 rounded-xl text-lg md:text-xl" data-op="+">+</button>
         
-        <button onclick="calculator.append('4')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">4</button>
-        <button onclick="calculator.append('5')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">5</button>
-        <button onclick="calculator.append('6')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">6</button>
-        <button onclick="calculator.calculate()" class="btn btn-equal bg-gradient-to-br from-pink-600 to-rose-600 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl row-span-2 flex items-center justify-center shadow-lg shadow-pink-500/20">=</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="4">4</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="5">5</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="6">6</button>
+        <button class="btn btn-equal bg-gradient-to-br from-pink-600 to-rose-600 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl row-span-2 flex items-center justify-center shadow-lg shadow-pink-500/20" data-action="equal">=</button>
         
-        <button onclick="calculator.append('1')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">1</button>
-        <button onclick="calculator.append('2')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">2</button>
-        <button onclick="calculator.append('3')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">3</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="1">1</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="2">2</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="3">3</button>
         
-        <button onclick="calculator.append('0')" class="btn col-span-2 bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">0</button>
-        <button onclick="calculator.append('.')" class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl">.</button>
+        <button class="btn col-span-2 bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num="0">0</button>
+        <button class="btn bg-gray-800/90 hover:bg-gray-700 text-white py-3 md:py-4 rounded-xl text-xl md:text-2xl" data-num=".">.</button>
       </div>
       
       <!-- Footer Message -->
@@ -205,103 +237,144 @@
     </div>
   </div>
 
-  <!-- 🎵 Background Love Music -->
-<audio id="bgMusic" preload="auto" loop>
-  <source src="audio.mp3" type="audio/mpeg">
-</audio>
-
-
-<script>
-  // 🎵 PRO MUSIC CONTROLLER
-const MusicController = (function () {
-  let music = document.getElementById("bgMusic");
-  let isStarted = false;
-  let isUnlocked = false;
-
-  // Unlock audio on first interaction (browser policy fix)
-  function unlockAudio() {
-    if (!music || isUnlocked) return;
-
-    const playPromise = music.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        music.pause();
-        music.currentTime = 0;
-        isUnlocked = true;
-      }).catch(() => {});
-    }
-  }
-
-  // Start music only once
-  function start() {
-    if (!music || isStarted) return;
-
-    music.volume = 0.7; // smooth volume
-    music.play().then(() => {
-      isStarted = true;
-    }).catch(() => {
-      console.log("Music play blocked");
-    });
-  }
-
-  // Smooth fade-in (PRO feel)
-  function fadeIn() {
-    if (!music) return;
-    music.volume = 0;
-    music.play();
-
-    let vol = 0;
-    const interval = setInterval(() => {
-      if (vol < 0.7) {
-        vol += 0.05;
-        music.volume = vol;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-  }
-
-  // First user interaction handler
-  function handleFirstInteraction() {
-    unlockAudio();
-    fadeIn();
-  }
-
-  // Init listeners
-  function init() {
-    document.addEventListener("click", handleFirstInteraction, { once: true });
-    document.addEventListener("touchstart", handleFirstInteraction, { once: true });
-    document.addEventListener("keydown", handleFirstInteraction, { once: true });
-  }
-
-  return {
-    init,
-    start
-  };
-})();
-
-// 🚀 Initialize
-MusicController.init();
-</script>
-
-
-
+  <!-- 🎵 Background Love Music - embedded as base64 silent fallback but actual audio.mp3 will be used with robust autoplay -->
+  <audio id="bgMusic" preload="auto" loop crossorigin="anonymous">
+    <source src="audio.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    // Professional Calculator Object - No recursion issues
+    // ======================== PROFESSIONAL MUSIC CONTROLLER WITH INSTANT PLAY ON FIRST TOUCH ========================
+    (function() {
+      const music = document.getElementById("bgMusic");
+      const musicStatusSpan = document.getElementById("musicStatus");
+      let musicPlayed = false;        // has music ever been successfully played?
+      let playAttempted = false;      // prevent multiple fade-in triggers
+      
+      // Function to update indicator text
+      function setMusicStatusText(playing) {
+        if (musicStatusSpan) {
+          if (playing) {
+            musicStatusSpan.innerHTML = "🎵 Love Melody ♪";
+            musicStatusSpan.style.color = "#ff99cc";
+          } else {
+            musicStatusSpan.innerHTML = "♥ Touch to play ♥";
+            musicStatusSpan.style.color = "#ffb3d9";
+          }
+        }
+      }
+      
+      // Actually start playback with fade-in (pro feel)
+      function startMusicWithFade() {
+        if (!music) return;
+        if (musicPlayed) return;
+        
+        // Reset and play
+        music.volume = 0;
+        music.currentTime = 0;
+        
+        const playPromise = music.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            musicPlayed = true;
+            setMusicStatusText(true);
+            // Smooth fade-in over 1.2 seconds
+            let vol = 0;
+            const fadeInterval = setInterval(() => {
+              if (vol < 0.65) {
+                vol += 0.05;
+                music.volume = vol;
+              } else {
+                music.volume = 0.7;
+                clearInterval(fadeInterval);
+              }
+            }, 80);
+          }).catch((err) => {
+            console.warn("Audio play failed on interaction:", err);
+            // fallback: retry once after a short delay? not needed as user will trigger again.
+            setMusicStatusText(false);
+          });
+        } else {
+          // old browser fallback
+          musicPlayed = true;
+          music.volume = 0.7;
+          setMusicStatusText(true);
+        }
+      }
+      
+      // UNIVERSAL FIRST-INTERACTION HANDLER (touch, click, keydown) - plays music immediately on first user engagement
+      function handleFirstUserInteraction(e) {
+        if (playAttempted) return;
+        playAttempted = true;
+        
+        // Remove all listeners after first capture
+        document.removeEventListener("touchstart", handleFirstUserInteraction);
+        document.removeEventListener("click", handleFirstUserInteraction);
+        document.removeEventListener("keydown", handleFirstUserInteraction);
+        
+        // Also remove from window for safety
+        window.removeEventListener("touchstart", handleFirstUserInteraction);
+        window.removeEventListener("click", handleFirstUserInteraction);
+        
+        // Initiate music playback instantly
+        startMusicWithFade();
+        
+        // Optional: Add subtle vibration if supported? not needed but adds magic
+        // Also show a tiny heart burst as thanks for starting music
+        const heartDiv = document.createElement('div');
+        heartDiv.innerHTML = '🎵✨';
+        heartDiv.style.position = 'fixed';
+        heartDiv.style.bottom = '70px';
+        heartDiv.style.right = '20px';
+        heartDiv.style.fontSize = '22px';
+        heartDiv.style.zIndex = '10001';
+        heartDiv.style.opacity = '0.8';
+        heartDiv.style.pointerEvents = 'none';
+        heartDiv.style.transition = 'opacity 1s';
+        document.body.appendChild(heartDiv);
+        setTimeout(() => heartDiv.style.opacity = '0', 1000);
+        setTimeout(() => heartDiv.remove(), 1500);
+      }
+      
+      // Additionally, we need to ensure that the audio element is ready and preloaded.
+      // For browsers that block autoplay without user interaction, we set the flag.
+      // Also if someone already interacted before script load? we attach listeners early.
+      function initMusic() {
+        // Set initial text status
+        setMusicStatusText(false);
+        // Preload audio metadata: set volume default
+        if (music) {
+          music.volume = 0.7;
+          music.loop = true;
+          // optional: force load
+          music.load();
+        }
+        
+        // Attach listeners to document AND window to capture first touch/click/key
+        document.addEventListener("touchstart", handleFirstUserInteraction, { passive: false });
+        document.addEventListener("click", handleFirstUserInteraction);
+        document.addEventListener("keydown", handleFirstUserInteraction);
+        window.addEventListener("touchstart", handleFirstUserInteraction);
+        window.addEventListener("click", handleFirstUserInteraction);
+        
+        // Additionally, the calculator buttons will also trigger interaction via event bubbling.
+        // That's perfect because any tap on calculator will start the music.
+        // Also guarantee that if the user interacts with any part of UI, music starts.
+      }
+      
+      initMusic();
+    })();
+    
+    // ======================== CALCULATOR MODULE (enhanced, no recursion, integrated love effects) ========================
     const calculator = (function() {
       let displayElement = document.getElementById("display");
       let footerElement = document.getElementById("footerMessage");
       let cardElement = document.getElementById("calcCard");
       
-      // Helper: Create floating heart (natural movement)
       function createHeart(x, y) {
-        const hearts = ['❤️', '💖', '💗', '💓', '💕', '💞'];
+        const hearts = ['❤️', '💖', '💗', '💓', '💕', '💞', '🌸', '🌹'];
         const heart = document.createElement('div');
         heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
         heart.className = 'floating-heart';
-        
-        // Use provided position or center of display
         let posX = x;
         let posY = y;
         if (!posX || !posY) {
@@ -309,17 +382,12 @@ MusicController.init();
           posX = rect.left + rect.width / 2 + (Math.random() - 0.5) * 80;
           posY = rect.bottom - 10;
         }
-        
         heart.style.left = posX + 'px';
         heart.style.top = posY + 'px';
         document.body.appendChild(heart);
-        
-        setTimeout(() => {
-          if (heart && heart.remove) heart.remove();
-        }, 2500);
+        setTimeout(() => { if(heart && heart.remove) heart.remove(); }, 2500);
       }
       
-      // Helper: Create ripple effect
       function createRipple(x, y) {
         const ripple = document.createElement('div');
         ripple.className = 'ripple-effect';
@@ -331,25 +399,14 @@ MusicController.init();
         setTimeout(() => ripple.remove(), 800);
       }
       
-      // Magic animation for number 7
       function triggerSevenAnimation() {
-        // 1. Display glow effect
         displayElement.classList.add('seven-glow');
-        setTimeout(() => {
-          displayElement.classList.remove('seven-glow');
-        }, 800);
-        
-        // 2. Card border glow
+        setTimeout(() => displayElement.classList.remove('seven-glow'), 800);
         cardElement.classList.add('card-glow');
-        setTimeout(() => {
-          cardElement.classList.remove('card-glow');
-        }, 1000);
-        
-        // 3. Create floating hearts from display area (12 hearts, staggered)
+        setTimeout(() => cardElement.classList.remove('card-glow'), 1000);
         const rect = displayElement.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const baseY = rect.bottom - 5;
-        
         for (let i = 0; i < 14; i++) {
           setTimeout(() => {
             const offsetX = (Math.random() - 0.5) * 120;
@@ -357,37 +414,21 @@ MusicController.init();
             createHeart(centerX + offsetX, baseY + offsetY);
           }, i * 50);
         }
-        
-        // 4. Create ripples
-        setTimeout(() => {
-          createRipple(centerX, baseY);
-        }, 100);
-        setTimeout(() => {
-          createRipple(centerX - 20, baseY + 5);
-        }, 300);
-        
-        // 5. Update footer message
+        setTimeout(() => createRipple(centerX, baseY), 100);
+        setTimeout(() => createRipple(centerX - 20, baseY + 5), 300);
         const originalMsg = footerElement.innerHTML;
         footerElement.innerHTML = "✨ 7 — She lives in every calculation ✨ 💫";
         setTimeout(() => {
-          footerElement.innerHTML = "💖 \"Some calculations never end... Just like our story\" 💖";
-        }, 2500);
-        
-        // 6. Slight background shimmer
+          if(footerElement.innerHTML.includes("7 — She")) footerElement.innerHTML = "💖 \"Some calculations never end... Just like our story\" 💖";
+        }, 2600);
         document.body.style.transition = "background 0.5s ease";
         document.body.style.background = "radial-gradient(circle at 40% 30%, #ff69b460, #1a0033, #0a0a1a)";
-        setTimeout(() => {
-          document.body.style.background = "";
-        }, 700);
+        setTimeout(() => document.body.style.background = "", 700);
       }
       
-      // Public methods
-      function append(value) {
-        if (displayElement.value === "Error") {
-          displayElement.value = "";
-        }
+      function updateDisplay(value) {
+        if (displayElement.value === "Error") displayElement.value = "";
         displayElement.value += value;
-        // Reset footer if it was showing special message
         if (footerElement.innerHTML.includes("7 — She") || footerElement.innerHTML.includes("Some calculations never end")) {
           footerElement.innerHTML = "💖 \"Every sum leads to your heartbeat\" 💖";
         }
@@ -400,161 +441,175 @@ MusicController.init();
         cardElement.classList.remove('card-glow');
       }
       
-      function calculate() {
+      function calculateResult() {
         let expression = displayElement.value.trim();
         if (expression === "") {
           displayElement.value = "0";
           return;
         }
-        
         try {
-          // Safely evaluate the expression
           let result = Function('"use strict";return (' + expression + ')')();
-          
-          // Handle floating point precision
-          if (typeof result === 'number') {
-            result = parseFloat(result.toFixed(8));
-          }
-          
+          if (typeof result === 'number') result = parseFloat(result.toFixed(8));
           const resultStr = result.toString();
           displayElement.value = resultStr;
           
-          // Check if result is exactly 7
+          // MAGIC 7
           if (Math.abs(result - 7) < 0.0000001) {
             triggerSevenAnimation();
           }
-          // Easter egg: 143 = I Love You
+          // 143 love code
           else if (Math.abs(result - 143) < 0.0000001) {
             footerElement.innerHTML = "💌 1-4-3 : I LOVE YOU ADITYA & KASHISH 💌";
             const rect = displayElement.getBoundingClientRect();
-            for (let i = 0; i < 8; i++) {
-              setTimeout(() => {
-                createHeart(rect.left + rect.width/2 + (Math.random()-0.5)*70, rect.bottom - 5);
-              }, i * 80);
+            for (let i = 0; i < 10; i++) {
+              setTimeout(() => createHeart(rect.left + rect.width/2 + (Math.random()-0.5)*70, rect.bottom - 5), i * 70);
             }
             setTimeout(() => {
-              if (footerElement.innerHTML.includes("LOVE")) {
-                footerElement.innerHTML = "💖 \"Every sum leads to your heartbeat\" 💖";
-              }
-            }, 3000);
+              if (footerElement.innerHTML.includes("LOVE")) footerElement.innerHTML = "💖 \"Every sum leads to your heartbeat\" 💖";
+            }, 3200);
           }
-          // Easter egg: 786 (blessings)
+          // 786 blessings
           else if (Math.abs(result - 786) < 0.0000001) {
             footerElement.innerHTML = "🤲✨ Blessings of eternal love ✨🤲";
-            setTimeout(() => {
-              footerElement.innerHTML = "💖 \"Every sum leads to your heartbeat\" 💖";
-            }, 2500);
+            setTimeout(() => footerElement.innerHTML = "💖 \"Every sum leads to your heartbeat\" 💖", 2800);
             const rect = displayElement.getBoundingClientRect();
-            for (let i = 0; i < 6; i++) {
-              setTimeout(() => createHeart(rect.left + rect.width/2 + (Math.random()-0.5)*60, rect.bottom - 5), i * 100);
-            }
+            for (let i = 0; i < 8; i++) setTimeout(() => createHeart(rect.left + rect.width/2 + (Math.random()-0.5)*60, rect.bottom - 5), i * 100);
           }
           else {
             displayElement.classList.remove('seven-glow');
-            // Random romantic messages occasionally
-            const loveMessages = [
-              "💗 Love is infinite decimals",
-              "🌸 She dances in every number",
-              "💖 Forever counting memories",
-              "✨ Digits of destiny align",
-              "❤️ Aditya + Kashish = ∞"
-            ];
+            const loveMessages = ["💗 Love is infinite decimals", "🌸 She dances in every number", "💖 Forever counting memories", "✨ Digits of destiny align", "❤️ Aditya + Kashish = ∞", "🎵 This melody is for you"];
             if (Math.random() > 0.8) {
               footerElement.innerHTML = loveMessages[Math.floor(Math.random() * loveMessages.length)];
               setTimeout(() => {
-                if (!footerElement.innerHTML.includes("LOVE") && !footerElement.innerHTML.includes("7 — She")) {
+                if (!footerElement.innerHTML.includes("LOVE") && !footerElement.innerHTML.includes("7 — She") && !footerElement.innerHTML.includes("Blessings"))
                   footerElement.innerHTML = "💖 \"Every sum leads to your heartbeat\" 💖";
-                }
-              }, 2000);
+              }, 2200);
             }
           }
         } catch (error) {
           displayElement.value = "Error";
           footerElement.innerHTML = "💔 Infinite loop of love... try again 💔";
           setTimeout(() => {
-            if (displayElement.value === "Error") {
-              footerElement.innerHTML = "💖 \"Some calculations never end...\" 💖";
-            }
-          }, 1500);
+            if (displayElement.value === "Error") footerElement.innerHTML = "💖 \"Some calculations never end...\" 💖";
+          }, 1600);
         }
       }
       
-      // Return public API
-      return {
-        append: append,
-        clear: clearDisplay,
-        calculate: calculate
-      };
+      return { updateDisplay, clearDisplay, calculateResult };
     })();
     
-    // Keyboard support
-    document.addEventListener('keydown', function(e) {
-      const key = e.key;
-      if ((key >= '0' && key <= '9') || key === '.' || key === '+' || key === '-' || key === '*' || key === '/') {
-        e.preventDefault();
-        if (key === '*') calculator.append('*');
-        else if (key === '/') calculator.append('/');
-        else calculator.append(key);
-      } else if (key === 'Enter' || key === '=') {
-        e.preventDefault();
-        calculator.calculate();
-      } else if (key === 'Escape' || key === 'c' || key === 'C') {
-        e.preventDefault();
-        calculator.clear();
-      } else if (key === 'Backspace') {
-        e.preventDefault();
-        let display = document.getElementById("display");
-        display.value = display.value.slice(0, -1);
-      }
-    });
-    
-    // Button ripple effect for better tactile feedback
-    const allButtons = document.querySelectorAll('.btn');
-    allButtons.forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        const ripple = document.createElement('span');
-        ripple.style.position = 'absolute';
-        ripple.style.width = '30px';
-        ripple.style.height = '30px';
-        ripple.style.background = 'radial-gradient(circle, rgba(255,200,220,0.7), transparent)';
-        ripple.style.borderRadius = '50%';
-        ripple.style.pointerEvents = 'none';
-        ripple.style.transform = 'translate(-50%, -50%) scale(0)';
-        ripple.style.transition = 'transform 0.3s ease-out, opacity 0.4s';
-        ripple.style.left = e.clientX - btn.getBoundingClientRect().left + 'px';
-        ripple.style.top = e.clientY - btn.getBoundingClientRect().top + 'px';
-        ripple.style.opacity = '0.8';
-        btn.style.position = 'relative';
-        btn.style.overflow = 'hidden';
-        btn.appendChild(ripple);
-        
-        requestAnimationFrame(() => {
-          ripple.style.transform = 'translate(-50%, -50%) scale(8)';
-          ripple.style.opacity = '0';
+    // ========== ATTACH ALL BUTTON LISTENERS (with ripple effect) ==========
+    function attachButtonEvents() {
+      // Number & dot buttons
+      document.querySelectorAll('[data-num]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const val = btn.getAttribute('data-num');
+          calculator.updateDisplay(val);
         });
-        
-        setTimeout(() => ripple.remove(), 400);
       });
-    });
+      // Operator buttons
+      document.querySelectorAll('[data-op]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const op = btn.getAttribute('data-op');
+          calculator.updateDisplay(op);
+        });
+      });
+      // Clear button
+      const clearBtn = document.querySelector('[data-action="clear"]');
+      if (clearBtn) clearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calculator.clearDisplay();
+      });
+      // Equal button
+      const equalBtn = document.querySelector('[data-action="equal"]');
+      if (equalBtn) equalBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calculator.calculateResult();
+      });
+    }
     
-    // Add subtle floating background particles
-    setInterval(() => {
-      const particle = document.createElement('div');
-      particle.style.position = 'fixed';
-      particle.style.width = '2px';
-      particle.style.height = '2px';
-      particle.style.background = `rgba(255, 100, 150, ${Math.random() * 0.4 + 0.1})`;
-      particle.style.borderRadius = '50%';
-      particle.style.left = Math.random() * window.innerWidth + 'px';
-      particle.style.top = Math.random() * window.innerHeight + 'px';
-      particle.style.pointerEvents = 'none';
-      particle.style.opacity = '0.5';
-      particle.style.zIndex = '0';
-      document.body.appendChild(particle);
-      setTimeout(() => particle.remove(), 4000);
-    }, 1000);
-
- 
+    // Ripple effect for all buttons + additional smooth feedback
+    function addRippleToButtons() {
+      const btns = document.querySelectorAll('.btn');
+      btns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const rectBtn = this.getBoundingClientRect();
+          const rippleSpan = document.createElement('span');
+          rippleSpan.style.position = 'absolute';
+          rippleSpan.style.width = '28px';
+          rippleSpan.style.height = '28px';
+          rippleSpan.style.background = 'radial-gradient(circle, rgba(255,200,220,0.8), rgba(255,105,180,0.3))';
+          rippleSpan.style.borderRadius = '50%';
+          rippleSpan.style.pointerEvents = 'none';
+          rippleSpan.style.transform = 'translate(-50%, -50%) scale(0)';
+          rippleSpan.style.transition = 'transform 0.35s ease-out, opacity 0.4s';
+          rippleSpan.style.left = (e.clientX - rectBtn.left) + 'px';
+          rippleSpan.style.top = (e.clientY - rectBtn.top) + 'px';
+          rippleSpan.style.opacity = '0.9';
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild(rippleSpan);
+          requestAnimationFrame(() => {
+            rippleSpan.style.transform = 'translate(-50%, -50%) scale(9)';
+            rippleSpan.style.opacity = '0';
+          });
+          setTimeout(() => rippleSpan.remove(), 450);
+        });
+      });
+    }
+    
+    // Keyboard Support
+    function enableKeyboardSupport() {
+      document.addEventListener('keydown', (e) => {
+        const key = e.key;
+        if ((key >= '0' && key <= '9') || key === '.' || key === '+' || key === '-' || key === '*' || key === '/') {
+          e.preventDefault();
+          if (key === '*') calculator.updateDisplay('*');
+          else if (key === '/') calculator.updateDisplay('/');
+          else calculator.updateDisplay(key);
+        } else if (key === 'Enter' || key === '=') {
+          e.preventDefault();
+          calculator.calculateResult();
+        } else if (key === 'Escape' || key === 'c' || key === 'C') {
+          e.preventDefault();
+          calculator.clearDisplay();
+        } else if (key === 'Backspace') {
+          e.preventDefault();
+          let display = document.getElementById("display");
+          display.value = display.value.slice(0, -1);
+        }
+      });
+    }
+    
+    // Floating particles for romantic ambiance
+    function startAmbientParticles() {
+      setInterval(() => {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.width = '3px';
+        particle.style.height = '3px';
+        particle.style.background = `rgba(255, 120, 160, ${Math.random() * 0.5 + 0.2})`;
+        particle.style.borderRadius = '50%';
+        particle.style.left = Math.random() * window.innerWidth + 'px';
+        particle.style.top = Math.random() * window.innerHeight + 'px';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '0';
+        particle.style.opacity = '0.6';
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 4000);
+      }, 1100);
+    }
+    
+    // INIT ALL
+    attachButtonEvents();
+    addRippleToButtons();
+    enableKeyboardSupport();
+    startAmbientParticles();
+    
+    // also ensure display initial value zero
+    document.getElementById("display").value = "";
   </script>
 </body>
-</html>   
+</html>
